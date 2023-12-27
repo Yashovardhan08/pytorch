@@ -12,6 +12,7 @@ import torch._inductor as inductor
 import torch.utils._pytree as pytree
 from torch import fx
 from torch._decomp import register_decomposition
+from torch._dynamo.utils import counters
 
 from torch._higher_order_ops.triton_kernel_wrap import triton_kernel_wrapper_functional
 from torch._prims_common import is_boolean_dtype, is_expandable_to, is_integer_dtype
@@ -112,6 +113,7 @@ def post_grad_passes(gm: torch.fx.GraphModule, is_inference: bool):
     gm.recompile()
     gm.graph.lint()
 
+    log.debug("counters of inductor dict after apply the split cat in the post grad pass: %s", counters["inductor"])
     print_graph(gm.graph, "After recompile in post grad pass.")
 
 

@@ -4,7 +4,7 @@ from typing import List, Optional
 
 import torch
 import torch.nn as nn
-from torch._dynamo.utils import detect_fake_mode
+from torch._dynamo.utils import counters, detect_fake_mode
 from torch._utils_internal import print_graph
 from torch.fx.experimental.optimization import (
     matches_module_pattern,
@@ -90,6 +90,7 @@ def pre_grad_passes(gm: torch.fx.GraphModule, example_inputs):
     gm.graph.lint()
     gm.recompile()
 
+    log.debug("counters of inductor dict after apply the split cat in the pre grad pass: %s", counters["inductor"])
     print_graph(gm.graph, "After recompile in pre grad pass.")
 
     return gm
